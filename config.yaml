@@ -1,0 +1,39 @@
+env_id: roundabout-v0
+algo: dqn
+
+train:
+  device: cuda
+  max_epochs: 500000
+  num_steps_per_epoch: 200
+  warmup_steps: 50000         # warmup 은 train 섹션에서만 정의 (단일 소스)
+  use_warmup_file: false      # false: 웜업 단계 수행 (frame stacking 제거 후 기존 warmup 파일 호환 안 됨)
+  log_interval: 10
+  eval_interval: 50
+  record_eval_video: false
+  render_train: true   # 학습 중 실시간 시각화
+  video_dir: "videos"
+  render_eval: false   # 평가 중 실시간 시각화
+  save_checkpoint: true  # 학습 완료 후 모델 가중치 저장
+  checkpoint_dir: "checkpoints"  # 체크포인트 저장 디렉토리
+  early_stop_patience: 100
+
+dqn:
+  gamma: 0.99
+  lr: 0.0001
+  batch_size: 512
+  replay_buffer_capacity: 100000
+
+  eps_start: 0.8  # warmup 파일 사용 시 0.9는 너무 높음 (초반 충돌 빈발) → 0.5로 낮춤
+  eps_end: 0.02
+  eps_decay: 50000  # 더 빠른 수렴을 위해 250000 → 150000으로 변경 (750 에폭 동안 decay) 
+
+  target_update_interval: 1000
+  train_freq: 1
+  max_grad_norm: 10.0
+  hidden_dim: 256
+  hidden_depth: 2
+
+  n_step: 5
+
+
+
